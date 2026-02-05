@@ -5,7 +5,7 @@ A comprehensive PHP library for sending WhatsApp messages through multiple backe
 ## Installation
 
 ```bash
-composer require mdestafadilah/api-wa-rest
+composer require mdestafadilah/restapiwa
 ```
 
 ## Features
