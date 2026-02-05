@@ -145,70 +145,120 @@ class WhatsAppGateway
     private function buildPayload($backend, $number, $messageRaw, $isGroup)
     {
         $isGroupBool = $isGroup ? true : false;
-        $messageFull = $messageRaw . ($this->config['footer'] ?? '');
-        $sender = $this->config['servers'][$backend] ?? null;
-
-        if (!$sender) {
-            return null;
-        }
+        $messageFull = $messageRaw . $this->configWa->msgTemplate['footer'];
 
         switch ($backend) {
+            case 1:
+                return [
+                    'data' => [
+                        "receiver" => $number,
+                        "isGroup" => $isGroupBool,
+                        "message" => ["text" => $messageFull]
+                    ], 
+                    'endpoint' => $this->configWa->settingsServer['server']['1']."/chats/send?id={$this->configWa->settingsServer['sender']['1']}",
+                    'headers' => "ApiKey: " . $this->configWa->settingsServer['token']['1'],
+                    'is_json' => true
+                ];
+            case 2:
+                return [
+                    'data' => [
+                        "phone" => $number,
+                        "isGroup" => $isGroupBool,
+                        "message" => $messageFull
+                    ],
+                    'endpoint' => $this->configWa->settingsServer['server']['2']."api/" . $this->configWa->settingsServer['sender']['2'] . "/send-message",
+                    'headers' => "Authorization: Token " . $this->configWa->settingsServer['token']['2'],
+                    'is_json' => true
+                ];
             case 3:
                 return [
                     'data' => [
-                        "session"  => $sender['session_id'],
+                        "session"  => $sender['id'],
                         "to"       => $number,
-                        "is_group" => $isGroupBool,
+                        "is_group" => (boolean) $isGroupBool, // Ensure boolean for JSON
                         "delay"    => 5000,
-                        "text"     => str_replace(['\r\n', '\n', '\r'], "\n", $messageFull)
+                        "text"     => str_replace(['\r\n', '\n', '\r'], "\n", $messageFull) // Convert manual escapes to actual newlines
                     ],
-                    'endpoint' => $sender['base_url'] . "/message/send-text",
-                    'headers' => $sender['token'] ? ['Authorization' => "Bearer " . $sender['token']] : [],
+                    'endpoint' => $this->configWa->settingsServer['server']['3']."/message/send-text",
+                    'headers' => null,
                     'is_json' => true
                 ];
-
             case 4:
                 $n = strpos($number, 'g.us') !== false ? $number : ($isGroup ? $number . "@g.us" : $number);
                 return [
                     'data' => [
                         "Phone" => $n,
                         "Body" => str_replace(['\r\n', '\n', '\r'], "\n", $messageFull),
-                        "Id" => $this->generateRandomText(20)
+                        "Id" => random_text('alnum', '20')
                     ],
-                    'endpoint' => $sender['base_url'] . "chat/send/text",
-                    'headers' => $sender['token'] ? ['Token' => $sender['token']] : [],
+                    'endpoint' => $this->configWa->settingsServer['server']['4']."chat/send/text",
+                    'headers' => "Token: " . $this->configWa->settingsServer['token']['4'],
                     'is_json' => true
                 ];
-
-            case 8:
+            case 5:
+                $n = strpos($number, 'g.us') !== false ? $number . "@c.us" : ($isGroup ? $number . "@g.us" : $number . "@c.us");
+                return [
+                    'data' => [
+                        "chatId" => $n,
+                        "contentType" => "string",
+                        "content" => $messageFull
+                    ],
+                    'endpoint' => $this->configWa->settingsServer['server']['5']."/client/sendMessage/{$this->configWa->settingsServer['sender']['5']}",
+                    'headers' => "x-api-key:" . $this->configWa->settingsServer['token']['5'],
+                    'is_json' => true
+                ];
+            case 6:
+                $n = strpos($number, 'g.us') !== false ? "$number@s.whatsapp.net" : ($isGroup ? "$number@g.us" : $number . "@s.whatsapp.net");
+                return [
+                    'data' => [
+                        "phone" => $n,
+                        "message" => $messageFull,
+                        "reply_message_id" => random_text('alnum', '20'),
+                        "is_forwarded" => false,
+                        "duration" => 3600
+                    ],
+                    'endpoint' => $this->configWa->settingsServer['server']['6']."send/message",
+                    'headers' => "x-instance-id: " . $this->configWa->settingsServer['token']['6'],
+                    'is_json' => true
+                ];
+            case 7:
                 $n = strpos($number, 'g.us') !== false ? $number : $number;
                 return [
                     'data' => [
-                        "sessionId" => $sender['session_id'],
+                        "number" => $n,
+                        "text" => $messageFull
+                    ],
+                    'endpoint' => $this->configWa->settingsServer['server']['7']."message/sendText/{$this->configWa->settingsServer['sender']['7']}",
+                    'headers' => "apiKey: " . $this->configWa->settingsServer['token']['7'],
+                    'is_json' => true
+                ];
+            case 8:
+                $n = strpos($number, 'g.us') !== false ? $number : $number;
+                return [
+                     'data' => [
+                        "sessionId" => $sender['id'],
                         "chatId" => $n,
                         "message" => str_replace(['\r\n', '\n', '\r'], "\n", $messageFull),
                         "typingTime" => 5000,
                         "replyTo" => null
-                    ],
-                    'endpoint' => $sender['base_url'] . "/chats/send-text",
-                    'headers' => $sender['token'] ? ['X-Api-Key' => $sender['token']] : [],
-                    'is_json' => true
+                     ],
+                     'endpoint' => $this->configWa->settingsServer['server']['8']."/chats/send-text",
+                     'headers' => "X-Api-Key: " . $this->configWa->settingsServer['token']['8'],
+                     'is_json' => true
                 ];
-
             case 99:
                 if ($isGroup) return null;
                 return [
                     'data' => [
-                        'userkey' => $sender['userkey'],
-                        'passkey' => $sender['passkey'],
+                        'userkey' => $this->configWa->settingsServer['token']['99'],
+                        'passkey' => $this->configWa->settingsServer['token']['99'],
                         'to' => $number,
                         'message' => $messageRaw // NO FOOTER
                     ],
-                    'endpoint' => $sender['base_url'] . '/wareguler/api/sendWA',
-                    'headers' => [],
+                    'endpoint' => $this->configWa->settingsServer['server']['99'].'/wareguler/api/sendWA',
+                    'headers' => null,
                     'is_json' => false
                 ];
-
             default:
                 return null;
         }

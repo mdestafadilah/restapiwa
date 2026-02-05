@@ -74,6 +74,19 @@ if ($response['status'] == 200) {
 }
 ```
 
+### Backend Whatsapp Service
+
+1. https://github.com/andresayac/baileys-api
+2. https://github.com/wppconnect-team/wppconnect-server
+3. https://github.com/mimamch/wa-gateway
+4. https://github.com/avoylenko/wwebjs-api
+5. https://github.com/asternic/wuzapi
+6. https://github.com/LuizFelipeNeves/go-whatsapp-web-multidevice
+7. https://github.com/EvolutionAPI/evolution-api
+8. https://github.com/farinchan/chatery_whatsapp
+
+Pastikan sudah menjalankan 8 service diatas.
+
 ### Automatic Backend Selection
 
 ```php
