@@ -27,6 +27,11 @@ class WhatsAppGateway
     private $config;
 
     /**
+     * @var DatabaseManager|null Database manager instance
+     */
+    private $database;
+
+    /**
      * @var callable|null Logger callback function
      */
     private $logger;
@@ -36,10 +41,12 @@ class WhatsAppGateway
      * 
      * @param array $config Configuration array for WhatsApp servers
      * @param callable|null $logger Optional logger callback function
+     * @param DatabaseManager|null $database Optional database manager for loading config from DB
      */
-    public function __construct(array $config = [], $logger = null)
+    public function __construct(array $config = [], $logger = null, $database = null)
     {
         $this->clientGuzzle = new Client();
+        $this->database = $database;
         $this->config = $this->mergeDefaultConfig($config);
         $this->logger = $logger;
     }
@@ -145,7 +152,12 @@ class WhatsAppGateway
     private function buildPayload($backend, $number, $messageRaw, $isGroup)
     {
         $isGroupBool = $isGroup ? true : false;
-        $messageFull = $messageRaw . $this->configWa->msgTemplate['footer'];
+        $messageFull = $messageRaw . ($this->config['footer'] ?? '');
+        
+        $sender = $this->config['servers'][$backend] ?? null;
+        if (!$sender) {
+            return null;
+        }
 
         switch ($backend) {
             case 1:
@@ -173,13 +185,13 @@ class WhatsAppGateway
             case 3:
                 return [
                     'data' => [
-                        "session"  => $sender['id'],
+                        "session"  => $sender['session_id'] ?? '',
                         "to"       => $number,
                         "is_group" => (boolean) $isGroupBool, // Ensure boolean for JSON
                         "delay"    => 5000,
                         "text"     => str_replace(['\r\n', '\n', '\r'], "\n", $messageFull) // Convert manual escapes to actual newlines
                     ],
-                    'endpoint' => $this->configWa->settingsServer['server']['3']."/message/send-text",
+                    'endpoint' => $sender['base_url'] . "/message/send-text",
                     'headers' => null,
                     'is_json' => true
                 ];
@@ -189,10 +201,10 @@ class WhatsAppGateway
                     'data' => [
                         "Phone" => $n,
                         "Body" => str_replace(['\r\n', '\n', '\r'], "\n", $messageFull),
-                        "Id" => random_text('alnum', '20')
+                        "Id" => $this->generateRandomText(20, 'alnum')
                     ],
-                    'endpoint' => $this->configWa->settingsServer['server']['4']."chat/send/text",
-                    'headers' => "Token: " . $this->configWa->settingsServer['token']['4'],
+                    'endpoint' => $sender['base_url'] . "chat/send/text",
+                    'headers' => "Token: " . ($sender['token'] ?? ''),
                     'is_json' => true
                 ];
             case 5:
@@ -236,26 +248,26 @@ class WhatsAppGateway
                 $n = strpos($number, 'g.us') !== false ? $number : $number;
                 return [
                      'data' => [
-                        "sessionId" => $sender['id'],
+                        "sessionId" => $sender['session_id'] ?? '',
                         "chatId" => $n,
                         "message" => str_replace(['\r\n', '\n', '\r'], "\n", $messageFull),
                         "typingTime" => 5000,
                         "replyTo" => null
                      ],
-                     'endpoint' => $this->configWa->settingsServer['server']['8']."/chats/send-text",
-                     'headers' => "X-Api-Key: " . $this->configWa->settingsServer['token']['8'],
+                     'endpoint' => $sender['base_url'] . "/chats/send-text",
+                     'headers' => "X-Api-Key: " . ($sender['token'] ?? ''),
                      'is_json' => true
                 ];
             case 99:
                 if ($isGroup) return null;
                 return [
                     'data' => [
-                        'userkey' => $this->configWa->settingsServer['token']['99'],
-                        'passkey' => $this->configWa->settingsServer['token']['99'],
+                        'userkey' => $sender['userkey'] ?? '',
+                        'passkey' => $sender['passkey'] ?? '',
                         'to' => $number,
                         'message' => $messageRaw // NO FOOTER
                     ],
-                    'endpoint' => $this->configWa->settingsServer['server']['99'].'/wareguler/api/sendWA',
+                    'endpoint' => $sender['base_url'] . '/wareguler/api/sendWA',
                     'headers' => null,
                     'is_json' => false
                 ];
@@ -370,14 +382,26 @@ class WhatsAppGateway
      */
     private function logKirim($number, $message, $payload, $idUnik)
     {
+        $logData = [
+            'number' => $number,
+            'message' => $message,
+            'payload' => $payload,
+            'id_unik' => $idUnik,
+            'timestamp' => date('Y-m-d H:i:s')
+        ];
+
+        // Call custom logger callback if set
         if (is_callable($this->logger)) {
-            call_user_func($this->logger, [
-                'number' => $number,
-                'message' => $message,
-                'payload' => $payload,
-                'id_unik' => $idUnik,
-                'timestamp' => date('Y-m-d H:i:s')
-            ]);
+            call_user_func($this->logger, $logData);
+        }
+
+        // Save to database if database manager is available
+        if ($this->database instanceof DatabaseManager) {
+            try {
+                $this->database->logMessage($logData);
+            } catch (\Exception $e) {
+                error_log("Failed to log to database: " . $e->getMessage());
+            }
         }
     }
 
@@ -447,6 +471,17 @@ class WhatsAppGateway
                 ]
             ]
         ];
+
+        // Load from database if available
+        if ($this->database instanceof DatabaseManager) {
+            try {
+                $dbConfig = $this->database->getConfigArray();
+                $config = array_replace_recursive($config, $dbConfig);
+            } catch (\Exception $e) {
+                // Fallback to array config if database fails
+                error_log("Failed to load config from database: " . $e->getMessage());
+            }
+        }
 
         return array_replace_recursive($default, $config);
     }
