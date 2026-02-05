@@ -8,6 +8,19 @@ A comprehensive PHP library for sending WhatsApp messages through multiple backe
 composer require mdestafadilah/restapiwa
 ```
 
+### Pre-Required (Before Use This simple Library)
+
+1. https://github.com/andresayac/baileys-api
+2. https://github.com/wppconnect-team/wppconnect-server
+3. https://github.com/mimamch/wa-gateway
+4. https://github.com/avoylenko/wwebjs-api
+5. https://github.com/asternic/wuzapi
+6. https://github.com/LuizFelipeNeves/go-whatsapp-web-multidevice
+7. https://github.com/EvolutionAPI/evolution-api
+8. https://github.com/farinchan/chatery_whatsapp
+
+Please, make sure you already running 8 backend services above.
+
 ## Features
 
 - ✅ Multiple backend support (Backend 3, 4, 8, and 99)
@@ -73,19 +86,6 @@ if ($response['status'] == 200) {
     echo "Error: " . $response['message'] . "\n";
 }
 ```
-
-### Backend Whatsapp Service
-
-1. https://github.com/andresayac/baileys-api
-2. https://github.com/wppconnect-team/wppconnect-server
-3. https://github.com/mimamch/wa-gateway
-4. https://github.com/avoylenko/wwebjs-api
-5. https://github.com/asternic/wuzapi
-6. https://github.com/LuizFelipeNeves/go-whatsapp-web-multidevice
-7. https://github.com/EvolutionAPI/evolution-api
-8. https://github.com/farinchan/chatery_whatsapp
-
-Pastikan sudah menjalankan 8 service diatas.
 
 ### Automatic Backend Selection
 
