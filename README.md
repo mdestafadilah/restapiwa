@@ -2,6 +2,19 @@
 
 A comprehensive PHP library for sending WhatsApp messages through multiple backend services with SQLite database support for configuration management and message logging.
 
+### Pre-Required (Before Use This simple Library)
+
+1. https://github.com/andresayac/baileys-api
+2. https://github.com/wppconnect-team/wppconnect-server
+3. https://github.com/mimamch/wa-gateway
+4. https://github.com/avoylenko/wwebjs-api
+5. https://github.com/asternic/wuzapi
+6. https://github.com/LuizFelipeNeves/go-whatsapp-web-multidevice
+7. https://github.com/EvolutionAPI/evolution-api
+8. https://github.com/farinchan/chatery_whatsapp
+
+Please, make sure you already running 8 backend services above.
+
 ## Installation
 
 ```bash
@@ -172,37 +185,12 @@ $response = $wa->sendMessage([
 
 ## Backend Services
 
-### Backend 1
-- Free service
-- Requires: `base_url`, `session_id`
-- Supports: Individual & Group messages
-
-### Backend 2
-- Free service
-- Requires: `base_url`, `session_id`
-- Supports: Individual & Group messages
-
 ### Backend 3
 - Free service
 - Requires: `base_url`, `session_id`
 - Supports: Individual & Group messages
 
 ### Backend 4
-- Free service
-- Requires: `base_url`, `token`
-- Supports: Individual & Group messages
-
-### Backend 5
-- Free service
-- Requires: `base_url`, `token`
-- Supports: Individual & Group messages
-
-### Backend 6
-- Free service
-- Requires: `base_url`, `token`
-- Supports: Individual & Group messages
-
-### Backend 7
 - Free service
 - Requires: `base_url`, `token`
 - Supports: Individual & Group messages
