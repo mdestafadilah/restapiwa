@@ -52,6 +52,15 @@ class WhatsAppGateway
     }
 
     /**
+     * Show QR code
+     * TODO: Still Development.
+     */
+    public function showQrCode($phone)
+    {
+        
+    }
+
+    /**
      * Send WhatsApp Message
      * 
      * Main method to send WhatsApp messages through different backend services
