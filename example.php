@@ -17,6 +17,16 @@ use Mdestafadilah\ApiWaRest\WhatsAppGateway;
 $config = [
     'footer' => "\n\n--\nPesan otomatis dari sistem",
     'servers' => [
+        1 => [
+            'base_url' => 'https://v1.apiwa.persahabatan.co.id',
+            'session_id' => 'notifprima2v3ABCDE1234',
+            'token' => ''
+        ],
+        2 => [
+            'base_url' => 'https://v2.apiwa.persahabatan.co.id',
+            'session_id' => 'notifprima2v3ABCDE1234',
+            'token' => ''
+        ],
         3 => [
             'base_url' => 'https://v3.apiwa.persahabatan.co.id',
             'session_id' => 'notifprima2v3ABCDE1234',
@@ -24,6 +34,18 @@ $config = [
         ],
         4 => [
             'base_url' => 'https://v4.apiwa.persahabatan.co.id/',
+            'token' => 'your-token-here'
+        ],
+        5 => [
+            'base_url' => 'https://v5.apiwa.persahabatan.co.id/',
+            'token' => 'your-token-here'
+        ],
+        6 => [
+            'base_url' => 'https://v6.apiwa.persahabatan.co.id/',
+            'token' => 'your-token-here'
+        ],
+        7 => [
+            'base_url' => 'https://v7.apiwa.persahabatan.co.id/',
             'token' => 'your-token-here'
         ],
         8 => [

@@ -295,11 +295,26 @@ class WhatsAppGateway
         $headers = ['Accept' => 'application/json'];
 
         switch ($be) {
+            case 1:
+                $headers['ApiKey'] = $token;
+                break;
+            case 2:
+                $headers['Authorization'] = "Token " . $token;
+                break;
             case 3:
-                // No specific token header for backend 3
+                $headers['key'] = $token;
                 break;
             case 4:
                 $headers['Token'] = $token;
+                break;
+            case 5:
+                $headers['x-api-key'] = $token;
+                break;
+            case 6:
+                $headers['x-instance-id'] = $token;
+                break;
+            case 7:
+                $headers['apiKey'] = $token;
                 break;
             case 8:
                 $headers['X-Api-Key'] = $token;
@@ -319,10 +334,20 @@ class WhatsAppGateway
             $res = json_decode($response->getBody()->getContents(), true);
 
             switch ($be) {
+                case 1:
+                    return is_array($res) && isset($res['success']);
+                case 2:
+                    return is_array($res) && isset($res['success']);
                 case 3:
                     return is_array($res) && isset($res['success']);
                 case 4:
                     return ($res['code'] ?? 0) == 200;
+                case 5:
+                    return is_array($res) && isset($res['success']);
+                case 6:
+                    return is_array($res) && isset($res['success']);
+                case 7:
+                    return is_array($res) && isset($res['success']);
                 case 8:
                     return $res['success'] ?? false;
                 case 99:
@@ -450,12 +475,34 @@ class WhatsAppGateway
         $default = [
             'footer' => '',
             'servers' => [
+                1 => [
+                    'base_url' => '',
+                    'session_id' => '',
+                    'token' => ''
+                ],
+                2 => [
+                    'base_url' => '',
+                    'session_id' => '',
+                    'token' => ''
+                ],
                 3 => [
                     'base_url' => '',
                     'session_id' => '',
                     'token' => ''
                 ],
                 4 => [
+                    'base_url' => '',
+                    'token' => ''
+                ],
+                5 => [
+                    'base_url' => '',
+                    'token' => ''
+                ],
+                6 => [
+                    'base_url' => '',
+                    'token' => ''
+                ],
+                7 => [
                     'base_url' => '',
                     'token' => ''
                 ],
