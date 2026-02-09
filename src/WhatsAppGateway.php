@@ -55,9 +55,18 @@ class WhatsAppGateway
      * Show QR code
      * TODO: Still Development.
      */
-    public function showQrCode($phone)
+    public function generateQrCode($serverId, $phone)
     {
-        
+        switch ($serverId) {
+            case 3:
+
+                $url = "https://api.whatsapp.com/send?phone=" . $phone;
+                break;
+            
+            default:
+                throw new \Exception('BACKEND SERVICE WHATSAPP YANG TERSEDIA HANYA [1, 2, 3, 4, 5, 6, 7, 8 (Free) dan 99 (Khusus OTP, berbayar! bro..)]');
+                break;
+        }
     }
 
     /**
@@ -76,8 +85,8 @@ class WhatsAppGateway
     public function sendMessage($data = [], $be = 3, $isGroup = false, $otomatis = false, $idUnik = '')
     {
         // 1. Validation
-        if (!in_array($be, [3, 4, 8, 99]) && $otomatis == false) {
-            throw new \Exception('BACKEND SERVICE WHATSAPP YANG TERSEDIA HANYA [3, 4, 8 (Free) dan 99 (Khusus OTP, berbayar! bro..)]');
+        if (!in_array($be, [1, 2, 3, 4, 5, 6, 7, 8, 99]) && $otomatis == false) {
+            throw new \Exception('BACKEND SERVICE WHATSAPP YANG TERSEDIA HANYA [1, 2, 3, 4, 5, 6, 7, 8 (Free) dan 99 (Khusus OTP, berbayar! bro..)]');
         }
 
         // Validate required data
@@ -100,7 +109,7 @@ class WhatsAppGateway
         $payload = $this->buildPayload($be, $number, $data['pesanwa'], $isGroup);
 
         if (!$payload) {
-            throw new \Exception('BUDEG APA YA, PILIH SERVER 3, 4, 8 (Free) dan 99 (Khusus OTP, berbayar! bro..) JANGAN ASAL!!');
+            throw new \Exception('BUDEG APA YA, PILIH SERVER 1, 2, 3, 4, 5, 6, 7, 8 (Free) dan 99 (Khusus OTP, berbayar! bro..) JANGAN ASAL!!');
         }
 
         // 5. Save Log
@@ -169,6 +178,7 @@ class WhatsAppGateway
         }
 
         switch ($backend) {
+            // Source: https://go.topidesta.my.id/v1
             case 1:
                 return [
                     'data' => [
@@ -180,6 +190,7 @@ class WhatsAppGateway
                     'headers' => "ApiKey: " . $this->configWa->settingsServer['token']['1'],
                     'is_json' => true
                 ];
+            // Source: https://go.topidesta.my.id/v2
             case 2:
                 return [
                     'data' => [
@@ -191,6 +202,7 @@ class WhatsAppGateway
                     'headers' => "Authorization: Token " . $this->configWa->settingsServer['token']['2'],
                     'is_json' => true
                 ];
+            // Source: https://go.topidesta.my.id/v3
             case 3:
                 return [
                     'data' => [
@@ -204,6 +216,7 @@ class WhatsAppGateway
                     'headers' => null,
                     'is_json' => true
                 ];
+            // Source: https://go.topidesta.my.id/v4-3
             case 4:
                 $n = strpos($number, 'g.us') !== false ? $number : ($isGroup ? $number . "@g.us" : $number);
                 return [
@@ -216,6 +229,7 @@ class WhatsAppGateway
                     'headers' => "Token: " . ($sender['token'] ?? ''),
                     'is_json' => true
                 ];
+            // Source: https://go.topidesta.my.id/v4-4
             case 5:
                 $n = strpos($number, 'g.us') !== false ? $number . "@c.us" : ($isGroup ? $number . "@g.us" : $number . "@c.us");
                 return [
@@ -228,6 +242,7 @@ class WhatsAppGateway
                     'headers' => "x-api-key:" . $this->configWa->settingsServer['token']['5'],
                     'is_json' => true
                 ];
+            // Source: https://go.topidesta.my.id/v6
             case 6:
                 $n = strpos($number, 'g.us') !== false ? "$number@s.whatsapp.net" : ($isGroup ? "$number@g.us" : $number . "@s.whatsapp.net");
                 return [
@@ -242,6 +257,7 @@ class WhatsAppGateway
                     'headers' => "x-instance-id: " . $this->configWa->settingsServer['token']['6'],
                     'is_json' => true
                 ];
+            // Source: https://go.topidesta.my.id/v6-3
             case 7:
                 $n = strpos($number, 'g.us') !== false ? $number : $number;
                 return [
@@ -253,6 +269,7 @@ class WhatsAppGateway
                     'headers' => "apiKey: " . $this->configWa->settingsServer['token']['7'],
                     'is_json' => true
                 ];
+            // Source: https://go.topidesta.my.id/v7-3
             case 8:
                 $n = strpos($number, 'g.us') !== false ? $number : $number;
                 return [

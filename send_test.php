@@ -3,6 +3,7 @@
 require_once('vendor/autoload.php'); // Sesuaikan dengan struktur folder di repo tersebut
 
 use Mdestafadilah\ApiWaRest\WhatsAppGateway;
+use Mdestafadilah\ApiWaRest\DatabaseManager;
 
 // Inisialisasi API
 // Catatan: Library ini biasanya membutuhkan API Key atau Session ID 
@@ -23,16 +24,27 @@ $wa = new WhatsAppGateway($config);
 $nomor_tujuan = '6283898973731'; // Gunakan format internasional tanpa '+'
 $pesan = 'Halo! Ini adalah pesan tes dari Project PHP.';
 
-// Mengirim pesan teks
-$send = $wa->sendMessage([
-    'nomorhp' => $nomor_tujuan,
-    'pesanwa' => $pesan
-], 3);
+try {
+    $db = new DatabaseManager(__DIR__ . '/data/wa_gateway.db');
+    $db->init();
 
-if (isset($send['status']) && $send['status'] == 200) {
-    echo "Pesan berhasil dikirim ke $nomor_tujuan\n";
-    echo "Response: " . print_r($send, true);
-} else {
-    echo "Gagal mengirim pesan.\n";
-    echo "Response: " . print_r($send, true);
+    $servers = $db->getAll(); exit(print_r($servers, true));
+
+    // Mengirim pesan teks
+    $send = $wa->sendMessage([
+        'nomorhp' => $nomor_tujuan,
+        'pesanwa' => $pesan
+    ], 3);
+
+    if (isset($send['status']) && $send['status'] == 200) {
+        echo "Pesan berhasil dikirim ke $nomor_tujuan\n";
+        echo "Response: " . print_r($send, true);
+    } else {
+        echo "Gagal mengirim pesan.\n";
+        echo "Response: " . print_r($send, true);
+    }
+
+} catch (Exception $e) {
+    echo "Gagal menghubungkan ke database: " . $e->getMessage();
+    exit;
 }
