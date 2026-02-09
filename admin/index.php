@@ -65,6 +65,7 @@
                         <option value="8">Backend 8 (Free)</option>
                         <option value="99">Backend 99 (OTP - Paid)</option>
                     </select>
+                    <span id="backendDescription"></span>
                 </div>
 
                 <div class="form-group">

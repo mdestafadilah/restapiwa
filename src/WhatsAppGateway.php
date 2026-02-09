@@ -186,8 +186,8 @@ class WhatsAppGateway
                         "isGroup" => $isGroupBool,
                         "message" => ["text" => $messageFull]
                     ], 
-                    'endpoint' => $this->configWa->settingsServer['server']['1']."/chats/send?id={$this->configWa->settingsServer['sender']['1']}",
-                    'headers' => "ApiKey: " . $this->configWa->settingsServer['token']['1'],
+                    'endpoint' => $sender['base_url']."/chats/send?id=" . ($sender['session_id'] ?? ''),
+                    'headers' => "ApiKey: " . ($sender['token'] ?? ''),
                     'is_json' => true
                 ];
             // Source: https://go.topidesta.my.id/v2
@@ -198,8 +198,8 @@ class WhatsAppGateway
                         "isGroup" => $isGroupBool,
                         "message" => $messageFull
                     ],
-                    'endpoint' => $this->configWa->settingsServer['server']['2']."api/" . $this->configWa->settingsServer['sender']['2'] . "/send-message",
-                    'headers' => "Authorization: Token " . $this->configWa->settingsServer['token']['2'],
+                    'endpoint' => $sender['base_url']."api/" . ($sender['session_id'] ?? '') . "/send-message",
+                    'headers' => "Authorization: Token " . ($sender['token'] ?? ''),
                     'is_json' => true
                 ];
             // Source: https://go.topidesta.my.id/v3
@@ -238,8 +238,8 @@ class WhatsAppGateway
                         "contentType" => "string",
                         "content" => $messageFull
                     ],
-                    'endpoint' => $this->configWa->settingsServer['server']['5']."/client/sendMessage/{$this->configWa->settingsServer['sender']['5']}",
-                    'headers' => "x-api-key:" . $this->configWa->settingsServer['token']['5'],
+                    'endpoint' => $sender['base_url']."/client/sendMessage/" . ($sender['session_id'] ?? ''),
+                    'headers' => "x-api-key:" . ($sender['token'] ?? ''),
                     'is_json' => true
                 ];
             // Source: https://go.topidesta.my.id/v6
@@ -253,8 +253,8 @@ class WhatsAppGateway
                         "is_forwarded" => false,
                         "duration" => 3600
                     ],
-                    'endpoint' => $this->configWa->settingsServer['server']['6']."send/message",
-                    'headers' => "x-instance-id: " . $this->configWa->settingsServer['token']['6'],
+                    'endpoint' => $sender['base_url']."send/message",
+                    'headers' => "x-instance-id: " . ($sender['token'] ?? ''),
                     'is_json' => true
                 ];
             // Source: https://go.topidesta.my.id/v6-3
@@ -265,8 +265,8 @@ class WhatsAppGateway
                         "number" => $n,
                         "text" => $messageFull
                     ],
-                    'endpoint' => $this->configWa->settingsServer['server']['7']."message/sendText/{$this->configWa->settingsServer['sender']['7']}",
-                    'headers' => "apiKey: " . $this->configWa->settingsServer['token']['7'],
+                    'endpoint' => $sender['base_url']."message/sendText/" . ($sender['session_id'] ?? ''),
+                    'headers' => "apiKey: " . ($sender['token'] ?? ''),
                     'is_json' => true
                 ];
             // Source: https://go.topidesta.my.id/v7-3
