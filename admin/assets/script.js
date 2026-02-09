@@ -221,7 +221,12 @@ function toggleFields() {
     8: "https://go.topidesta.my.id/v8",
     99: "https://go.topidesta.my.id/v99",
   };
-  backendDescription.textContent = serverList[backendId];
+  const url = serverList[backendId];
+  if (url) {
+    backendDescription.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+  } else {
+    backendDescription.innerHTML = "";
+  }
 
   // Show fields based on backend type
   if (["1", "2", "3", "5", "7", "8"].includes(backendId)) {
