@@ -55,8 +55,13 @@
                     <label for="backend_id">Backend ID *</label>
                     <select id="backend_id" name="backend_id" required onchange="toggleFields()">
                         <option value="">-- Select Backend --</option>
+                        <option value="1">Backend 1 (Free)</option>
+                        <option value="2">Backend 2 (Free)</option>
                         <option value="3">Backend 3 (Free)</option>
                         <option value="4">Backend 4 (Free)</option>
+                        <option value="5">Backend 5 (Free)</option>
+                        <option value="6">Backend 6 (Free)</option>
+                        <option value="7">Backend 7 (Free)</option>
                         <option value="8">Backend 8 (Free)</option>
                         <option value="99">Backend 99 (OTP - Paid)</option>
                     </select>
