@@ -214,11 +214,11 @@ function toggleFields() {
     1: "https://go.topidesta.my.id/v1",
     2: "https://go.topidesta.my.id/v2",
     3: "https://go.topidesta.my.id/v3",
-    4: "https://go.topidesta.my.id/v4",
-    5: "https://go.topidesta.my.id/v5",
+    4: "https://go.topidesta.my.id/v4-3",
+    5: "https://go.topidesta.my.id/v4-4",
     6: "https://go.topidesta.my.id/v6",
-    7: "https://go.topidesta.my.id/v7",
-    8: "https://go.topidesta.my.id/v8",
+    7: "https://go.topidesta.my.id/v6-3",
+    8: "https://go.topidesta.my.id/v7-3",
     99: "https://go.topidesta.my.id/v99",
   };
   const url = serverList[backendId];
