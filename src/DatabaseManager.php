@@ -177,11 +177,11 @@ class DatabaseManager
             ];
 
             // Add specific fields based on backend type
-            if (in_array($backendId, [3, 8])) {
+            if (in_array($backendId, [1, 2, 3, 5, 7, 8])) {
                 $serverConfig['session_id'] = $server['session_id'] ?? '';
             }
             
-            if (in_array($backendId, [3, 4, 8])) {
+            if (in_array($backendId, [1, 2, 3, 4, 5, 6, 7, 8])) {
                 $serverConfig['token'] = $server['token'] ?? '';
             }
 
