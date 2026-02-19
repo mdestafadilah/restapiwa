@@ -1,8 +1,10 @@
-# WhatsApp Gateway Library
+# Apa Ini
 
-A comprehensive PHP library for sending WhatsApp messages through multiple backend services with SQLite database support for configuration management and message logging.
+Ini Hanya REST API WhatsApp Client sederhana yang saya buat untuk keperluan pribadi, jika ada yang mau menggunakan silahkan, tapi jangan lupa untuk menghargai karya orang lain.
 
 ### Pre-Required (Before Use This simple Library)
+
+Pastikan sudah menjalankan service whatsapp berikut:
 
 1. https://github.com/andresayac/baileys-api
 2. https://github.com/wppconnect-team/wppconnect-server
@@ -23,7 +25,7 @@ composer require mdestafadilah/restapiwa
 
 ## Features
 
-- ✅ Multiple backend support (Backend 3, 4, 8, and 99)
+- ✅ Multiple backend support (Backend 3, 4, 7, 8, and 99)
 - ✅ Automatic backend selection with health check
 - ✅ Phone number normalization
 - ✅ Group message support
@@ -191,6 +193,11 @@ $response = $wa->sendMessage([
 - Supports: Individual & Group messages
 
 ### Backend 4
+- Free service
+- Requires: `base_url`, `token`
+- Supports: Individual & Group messages
+
+### Backend 7
 - Free service
 - Requires: `base_url`, `token`
 - Supports: Individual & Group messages
